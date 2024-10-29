@@ -9,30 +9,112 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": ["*"],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
-        {
-            "command": "pjworker.submitTask",
-            "title": "提交 PJ 任务",
-            "icon": {
-                "light": "resources/light/rocket.svg",
-                "dark": "resources/dark/rocket.svg"
-            }
+      {
+        "command": "pjworker.startMonitoring",
+        "title": "[PJ]Start Resource Monitoring"
+      },
+      {
+        "command": "pjworker.stopMonitoring",
+        "title": "[PJ]Stop Resource Monitoring"
+      },
+      {
+        "command": "pjworker.generateAndSubmitScript",
+        "title": "[PJ>Gen & Submit!] "
+      },
+      {
+        "command": "pjworker.generateShScript",
+        "title": "[PJ>Gen! ]"
+      },
+      {
+        "command": "pjworker.submitTask",
+        "title": "[PJ]Submit Task",
+        "icon": {
+          "light": "resources/light/rocket.svg",
+          "dark": "resources/dark/rocket.svg"
         }
+      },
+      {
+        "command": "pjworker.checkUsage",
+        "title": "[PJ]Check Usage",
+        "icon": {
+          "light": "resources/light/monitor.svg",
+          "dark": "resources/dark/monitor.svg"
+        }
+      },
+      {
+        "command": "pjworker.startInteractiveSession",
+        "title": "[PJ]Start Interactive",
+        "icon": {
+          "light": "resources/light/session.svg",
+          "dark": "resources/dark/session.svg"
+        }
+      }
     ],
     "menus": {
-        "editor/title": [
-            {
-                "command": "pjworker.submitTask",
-                "when": "resourceLangId == shellscript",
-                "group": "navigation"
-            }
-        ]
+      "editor/title": [
+        {
+          "command": "pjworker.generateAndSubmitScript",
+          "when": "resourceLangId == python",
+          "group": "navigation"
+        },
+        {
+          "command": "pjworker.submitTask",
+          "when": "resourceLangId == shellscript",
+          "group": "navigation"
+        },
+        {
+          "command": "pjworker.checkUsage",
+          "when": "resourceLangId == shellscript",
+          "group": "navigation"
+        },
+        {
+          "command": "pjworker.startInteractiveSession",
+          "when": "resourceLangId == shellscript",
+          "group": "navigation"
+        },
+        {
+          "command": "pjworker.generateShScript",
+          "when": "resourceLangId == python",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "type": "object",
+      "title": "PJSub Settings",
+      "properties": {
+        "pjsub.resourceGroup": {
+          "type": "string",
+          "default": "short-a",
+          "description": "Resource group for the PJM task."
+        },
+        "pjsub.nodeCount": {
+          "type": "number",
+          "default": 1,
+          "description": "Number of nodes to request."
+        },
+        "pjsub.elapsedTime": {
+          "type": "string",
+          "default": "2:00:00",
+          "description": "Maximum execution time for the PJM task."
+        },
+        "pjsub.projectGroup": {
+          "type": "string",
+          "default": "gg53",
+          "description": "Project group for the PJM task."
+        },
+        "pjsub.joinOutput": {
+          "type": "boolean",
+          "default": true,
+          "description": "Join output and error logs."
+        }
+      }
     }
-  }
-  ,
+  },
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",

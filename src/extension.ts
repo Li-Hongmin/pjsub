@@ -1,75 +1,39 @@
 import * as vscode from 'vscode';
+import { submitTask } from './commands/submitTask';
+import { checkUsage } from './commands/checkUsage';
+import { startInteractiveSession } from './commands/startSession';
+import { generateShScript } from './commands/generateScript';
+import { initializeStatusBar, startMonitoring, stopMonitoring } from './utils/statusBar';
+const { startTaskMonitor, stopTaskMonitor } = require("./utils/taskMonitor");
 
-// 定义状态栏按钮
-let statusBarItem: vscode.StatusBarItem;
 
-// 判断是否为 pjsub 类型的文件
-function isPjsubFile(document: vscode.TextDocument): boolean {
-    const content = document.getText();
-    const hasPjsubOption = content.includes('#------ pjsub option --------#');
-    const hasProgramExecution = content.includes('#------- Program execution -------#');
-    return hasPjsubOption && hasProgramExecution;
-}
-
-// 更新状态栏按钮
-function updateStatusBar(document: vscode.TextDocument | undefined) {
-    if (!statusBarItem) {
-        statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-        statusBarItem.command = 'pjworker.submitTask';
-    }
-
-    // 判断是否需要显示按钮
-    if (document && document.languageId === 'shellscript' && isPjsubFile(document)) {
-        statusBarItem.text = `$(rocket) 提交任务`;
-        statusBarItem.show();
-    } else {
-        statusBarItem.hide();
-    }
-}
-
-// 提交任务命令
-function submitTask() {
-    const editor = vscode.window.activeTextEditor;
-    if (!editor) {
-        vscode.window.showErrorMessage("未找到活动文件，请打开 .sh 文件！");
-        return;
-    }
-
-    const document = editor.document;
-    if (document.languageId === 'shellscript' && isPjsubFile(document)) {
-        const filePath = document.fileName;
-        const fileDir = vscode.workspace.asRelativePath(document.uri.with({ path: document.uri.path.replace(/\/[^/]+$/, '') }));
-        
-        const terminal = vscode.window.createTerminal('Pjsub Terminal');
-        terminal.show();
-        terminal.sendText(`cd "${fileDir}" && pjsub "${filePath}"`);
-        vscode.window.showInformationMessage(`正在提交任务：pjsub ${filePath}`);
-    } else {
-        vscode.window.showErrorMessage("该文件不支持 pjsub 提交。");
-    }
-}
-
-// 插件激活时的初始化
 export function activate(context: vscode.ExtensionContext) {
-    // 注册提交任务命令
-    const submitTaskCommand = vscode.commands.registerCommand('pjworker.submitTask', submitTask);
-    context.subscriptions.push(submitTaskCommand);
+    
+    // 注册所有命令
+    context.subscriptions.push(
+        vscode.commands.registerCommand('pjworker.submitTask', submitTask),
+        vscode.commands.registerCommand('pjworker.checkUsage', checkUsage),
+        vscode.commands.registerCommand('pjworker.startInteractiveSession', startInteractiveSession),
+        vscode.commands.registerCommand('pjworker.generateShScript', () => generateShScript(false)),
+        vscode.commands.registerCommand('pjworker.generateAndSubmitScript', () => generateShScript(true)),
 
-    // 注册文件切换和打开事件
-    vscode.window.onDidChangeActiveTextEditor(editor => {
-        updateStatusBar(editor?.document);
-    });
-    vscode.workspace.onDidOpenTextDocument(updateStatusBar);
+        // 注册监控控制命令
+        vscode.commands.registerCommand('pjworker.startMonitoring', startMonitoring),
+        vscode.commands.registerCommand('pjworker.stopMonitoring', stopMonitoring),
+        vscode.commands.registerCommand("pjworker.startTaskMonitor", startTaskMonitor),
+        vscode.commands.registerCommand("pjworker.stopTaskMonitor", stopTaskMonitor)
+    
+    );
+    // 激活时自动启动任务监视
+    startTaskMonitor();
+    // 初始化状态栏并开始监测
+    initializeStatusBar(context);
 
-    // 初次激活时检测当前活动文件
-    if (vscode.window.activeTextEditor) {
-        updateStatusBar(vscode.window.activeTextEditor.document);
-    }
+    
 }
 
-// 停用插件时清理
 export function deactivate() {
-    if (statusBarItem) {
-        statusBarItem.dispose();
-    }
+    // 插件停用时可添加清理逻辑
+    stopTaskMonitor();
+    stopMonitoring();
 }
