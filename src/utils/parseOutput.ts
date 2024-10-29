@@ -1,20 +1,15 @@
-"use strict";
-const vscode = require("vscode");
-const fs = require("fs");
-const path = require("path");
+import * as vscode from "vscode";
+import * as fs from "fs";
+import * as path from "path";
 
-exports.parseNodeUsage = parseNodeUsage;
-exports.parseGpuUsage = parseGpuUsage;
-exports.generateShFileContent = generateShFileContent;
-exports.createOrUpdateScript = createOrUpdateScript;
-exports.submitScript = submitScript;
+export { parseNodeUsage, parseGpuUsage, generateShFileContent, createOrUpdateScript, submitScript };
 
 // 解析 node usage 输出，直接使用百分比
-function parseNodeUsage(output) {
-    const nodeInfo = {};
-    const nodeLines = output.split('\n').filter(line => /short-a|regular-a/.test(line));
+function parseNodeUsage(output: string): { [key: string]: string } {
+    const nodeInfo: { [key: string]: string } = {};
+    const nodeLines = output.split('\n').filter((line: string) => /short-a|regular-a/.test(line));
 
-    nodeLines.forEach(line => {
+    nodeLines.forEach((line: string) => {
         const [resource, , usagePercent] = line.trim().split(/\s+/);
 
         // 检查 usagePercent 是否以百分号结尾，并存储
@@ -29,15 +24,13 @@ function parseNodeUsage(output) {
 }
 
 // 解析 GPU usage 输出，直接使用百分比
-function parseGpuUsage(output) {
-    const gpuInfo = {};
-    // 使用正则表达式精确匹配包含 share-interactive 的行
-    const gpuLines = output.split('\n').filter(line => /share-interactive/.test(line));
+function parseGpuUsage(output: string): { [key: string]: string } {
+    const gpuInfo: { [key: string]: string } = {};
+    const gpuLines = output.split('\n').filter((line: string) => /share-interactive/.test(line));
 
-    gpuLines.forEach(line => {
+    gpuLines.forEach((line: string) => {
         const [resource, , usagePercent] = line.trim().split(/\s+/);
 
-        // 如果 resource 包含 "share-interactive"，则只提取 "share-interactive" 部分
         const key = resource.includes('share-interactive') ? 'share-interactive' : resource;
 
         // 检查 usagePercent 是否以百分号结尾，并存储
@@ -51,13 +44,13 @@ function parseGpuUsage(output) {
     return gpuInfo;
 }
 
-
-function generateShFileContent(workspaceFolder, pythonFileName) {
-    const resourceGroup = vscode.workspace.getConfiguration().get("pjsub.resourceGroup");
-    const nodeCount = vscode.workspace.getConfiguration().get("pjsub.nodeCount");
-    const elapsedTime = vscode.workspace.getConfiguration().get("pjsub.elapsedTime");
-    const projectGroup = vscode.workspace.getConfiguration().get("pjsub.projectGroup");
-    const joinOutput = vscode.workspace.getConfiguration().get("pjsub.joinOutput");
+// 生成 .sh 文件内容
+function generateShFileContent(workspaceFolder: string, pythonFileName: string): string {
+    const resourceGroup = vscode.workspace.getConfiguration().get("pjsub.resourceGroup", "default-group");
+    const nodeCount = vscode.workspace.getConfiguration().get("pjsub.nodeCount", "1");
+    const elapsedTime = vscode.workspace.getConfiguration().get("pjsub.elapsedTime", "2:00:00");
+    const projectGroup = vscode.workspace.getConfiguration().get("pjsub.projectGroup", "default-project");
+    const joinOutput = vscode.workspace.getConfiguration().get("pjsub.joinOutput", true);
 
     return `#!/bin/sh
 
@@ -84,10 +77,15 @@ python ${pythonFileName}`;
 }
 
 // 创建或更新脚本文件，返回最终文件路径
-function createOrUpdateScript(shFilePath, content, folderPath, baseFileName) {
+function createOrUpdateScript(
+    shFilePath: string,
+    content: string,
+    folderPath: string,
+    baseFileName: string
+): string {
     const existingScript = fs.readdirSync(folderPath)
-        .filter(file => file.endsWith('.sh') && !file.includes('.out')) // 过滤掉 .out 文件
-        .find(file => file.includes(`_${baseFileName}.sh`));
+        .filter((file: string) => file.endsWith('.sh') && !file.includes('.out'))
+        .find((file: string) => file.includes(`_${baseFileName}.sh`));
 
     const existingFilePath = existingScript ? path.join(folderPath, existingScript) : null;
 
@@ -95,16 +93,15 @@ function createOrUpdateScript(shFilePath, content, folderPath, baseFileName) {
         vscode.window.showInformationMessage(`Using existing script with matching content: ${existingScript}`);
         return existingFilePath;
     }
-    
+
     const filePathToWrite = existingFilePath || shFilePath;
     fs.writeFileSync(filePathToWrite, content, 'utf8');
     vscode.window.showInformationMessage(`${existingFilePath ? "Updated" : "Generated"} script: ${path.basename(filePathToWrite)}`);
     return filePathToWrite;
 }
 
-
 // 提交脚本
-function submitScript(shFilePath) {
+function submitScript(shFilePath: string): void {
     const fileDir = path.dirname(shFilePath);
     const terminal = vscode.window.activeTerminal || vscode.window.createTerminal('Pjsub Terminal');
     terminal.show();

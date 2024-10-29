@@ -1,71 +1,105 @@
-# pjsub README
+# PJSub Plugin for VS Code
 
-This is the README for your extension "pjsub". After writing up a brief description, we recommend including the following sections.
+The **PJSub Plugin** provides an efficient way to submit, monitor, and manage supercomputing tasks directly from VS Code. This plugin is designed for teams and individuals using supercomputing resources, enabling task submission and status checks without leaving the editor.
 
-## Features
+## Contents
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
-
-For example if there is an image subfolder under your extension project workspace:
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
-
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
+1. [Installation](#installation)
+2. [Configuration](#configuration)
+3. [Features](#features)
+4. [Troubleshooting](#troubleshooting)
 
 ---
 
-## Following extension guidelines
+## Installation
 
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
+### 1. Installing from a VSIX File
 
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
+1. Obtain the `.vsix` file for the PJSub plugin.
+2. Open **VS Code** and go to the **Extensions** panel.
+3. Click the ellipsis `⋮` in the top right corner and select **Install from VSIX...**.
+4. Select the `.vsix` file to complete the installation.
 
-## Working with Markdown
+### 2. Plugin Activation
 
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
+The plugin will activate automatically when a workspace is opened in VS Code. Once activated, you can use the commands provided by the plugin through the **Command Palette** (`Ctrl+Shift+P` or `Cmd+Shift+P`).
 
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
+---
 
-## For more information
+## Configuration
 
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
+The plugin includes several configuration options that can be adjusted in VS Code **Settings** (`Ctrl+,` or `Cmd+,`) or directly in the `settings.json` file.
 
-**Enjoy!**
+### Available Settings
+
+- **pjsub.resourceGroup**: Resource group (default: `"short-a"`)
+- **pjsub.nodeCount**: Number of nodes (default: `1`)
+- **pjsub.elapsedTime**: Maximum elapsed time (default: `"2:00:00"`)
+- **pjsub.projectGroup**: Project group (default: `"gg53"`)
+- **pjsub.joinOutput**: Merge output files (default: `true`)
+
+### Example Configuration in `settings.json`
+
+```json
+{
+    "pjsub.resourceGroup": "short-a",
+    "pjsub.nodeCount": 2,
+    "pjsub.elapsedTime": "1:30:00",
+    "pjsub.projectGroup": "gg53",
+    "pjsub.joinOutput": true
+}
+```
+
+---
+
+## Features
+
+### 1. Submit a Task
+
+**Command**: `[PJ] Submit Task`
+
+**Description**: Submits the currently opened `.sh` file as a supercomputing task. After submission, the plugin will automatically run `pjstat` after 3 seconds to check the task's status.
+
+**How to Use**:
+1. Open a `.sh` file in VS Code that contains valid task submission commands.
+2. Run the `[PJ] Submit Task` command.
+3. Upon successful submission, `pjstat` output will display the task's real-time status in the terminal.
+
+### 2. Generate and Submit a PJ Sub Script
+
+**Command**: `[PJ>Gen & Submit!]`
+
+**Description**: Generates an `.sh` script based on the current Python file and configuration settings, then submits it as a task.
+
+**How to Use**:
+1. Open a `.py` file you wish to run on the supercomputer.
+2. Run the `[PJ>Gen & Submit!]` command.
+3. The plugin will generate the `.sh` script and automatically submit it as a task.
+
+### 3. Generate PJ Sub Script Only
+
+**Command**: `[PJ>Gen!]`
+
+**Description**: Generates an `.sh` script based on the current Python file and configuration settings without submitting it as a task.
+
+**How to Use**:
+1. Open a `.py` file.
+2. Run the `[PJ>Gen!]` command.
+3. The plugin will generate the `.sh` script in the `pjsub_scripts` folder within your project directory.
+
+---
+
+## Troubleshooting
+
+1. **Plugin does not activate**: Ensure you’ve opened a workspace and the `.vsix` file is correctly installed.
+2. **Task submission errors**: Confirm that the `.sh` file has the correct syntax and valid PJ Sub settings.
+3. **Status check not updating**: Ensure you have access to the `pjstat` command and it’s correctly configured in your environment.
+
+For further assistance, please contact your team administrator or refer to the plugin’s support documentation.
+
+---
+
+Enjoy seamless task management with the PJSub Plugin for VS Code!
+```
+
+This `README.md` should be helpful for users to understand installation, configuration, and usage instructions clearly.
