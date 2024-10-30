@@ -3,8 +3,7 @@ import { submitTask } from './commands/submitTask';
 import { checkUsage } from './commands/checkUsage';
 import { startInteractiveSession } from './commands/startSession';
 import { generateShScript } from './commands/generateScript';
-import { initializeStatusBar, startMonitoring, stopMonitoring } from './utils/statusBar';
-const { startTaskMonitor, stopTaskMonitor } = require("./utils/taskMonitor");
+import { initializeStatusBar, startMonitoring, stopMonitoring,startTaskMonitor, stopTaskMonitor } from './utils/statusBar';
 
 
 export function activate(context: vscode.ExtensionContext) {

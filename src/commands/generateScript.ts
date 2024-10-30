@@ -1,7 +1,9 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
-import { generateShFileContent, createOrUpdateScript, submitScript } from '../utils/parseOutput';
+import { generateShFileContent } from '../utils/generateShFile';
+import { createOrUpdateScript } from '../utils/createOrUpdateScript';
+import { submitScript } from '../utils/submitScript';
 
 export async function generateShScript(shouldSubmit: boolean) {
     const editor = vscode.window.activeTextEditor;
