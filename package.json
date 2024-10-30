@@ -13,29 +13,31 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": ["*"],
+  "activationEvents": [
+    "*"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
         "command": "pjworker.startMonitoring",
-        "title": "[PJ]Start Resource Monitoring"
+        "title": "[PJ] Start Resource Monitoring"
       },
       {
         "command": "pjworker.stopMonitoring",
-        "title": "[PJ]Stop Resource Monitoring"
+        "title": "[PJ] Stop Resource Monitoring"
       },
       {
         "command": "pjworker.generateAndSubmitScript",
-        "title": "[PJ>Gen & Submit!] "
+        "title": "[PJ] Gen & Submit!"
       },
       {
         "command": "pjworker.generateShScript",
-        "title": "[PJ>Gen! ]"
+        "title": "[PJ] Gen!"
       },
       {
         "command": "pjworker.submitTask",
-        "title": "[PJ]Submit Task",
+        "title": "[PJ] Submit Task",
         "icon": {
           "light": "resources/light/rocket.svg",
           "dark": "resources/dark/rocket.svg"
@@ -43,7 +45,7 @@
       },
       {
         "command": "pjworker.checkUsage",
-        "title": "[PJ]Check Usage",
+        "title": "[PJ] Check Usage",
         "icon": {
           "light": "resources/light/monitor.svg",
           "dark": "resources/dark/monitor.svg"
@@ -51,11 +53,31 @@
       },
       {
         "command": "pjworker.startInteractiveSession",
-        "title": "[PJ]Start Interactive",
+        "title": "[PJ] Start Interactive",
         "icon": {
           "light": "resources/light/session.svg",
           "dark": "resources/dark/session.svg"
         }
+      },
+      {
+        "command": "pjworker.startMonitoringService",
+        "title": "[PJ] Start Monitoring Service"
+      },
+      {
+        "command": "pjworker.stopMonitoringService",
+        "title": "[PJ] Stop Monitoring Service"
+      },
+      {
+        "command": "pjworker.showDashboard",
+        "title": "[PJ] Show Resource Dashboard"
+      },
+      {
+        "command": "pjworker.startTaskMonitor",
+        "title": "[PJ] Start Task Monitoring"
+      },
+      {
+        "command": "pjworker.stopTaskMonitor",
+        "title": "[PJ] Stop Task Monitoring"
       }
     ],
     "menus": {
@@ -84,6 +106,24 @@
           "command": "pjworker.generateShScript",
           "when": "resourceLangId == python",
           "group": "navigation"
+        }
+      ]
+    },
+    "views": {
+      "pjsub": [
+        {
+          "type": "webview",
+          "id": "pjsub.resourceMonitor",
+          "name": "Resource Monitor"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "pjsub",
+          "title": "PJSub",
+          "icon": "resources/dark/icon.png"
         }
       ]
     },
@@ -128,14 +168,28 @@
     "test": "vscode-test"
   },
   "devDependencies": {
-    "@types/vscode": "^1.94.0",
     "@types/mocha": "^10.0.9",
     "@types/node": "20.x",
+    "@types/vscode": "^1.95.0",
     "@typescript-eslint/eslint-plugin": "^8.10.0",
     "@typescript-eslint/parser": "^8.7.0",
-    "eslint": "^9.13.0",
-    "typescript": "^5.6.3",
     "@vscode/test-cli": "^0.0.10",
-    "@vscode/test-electron": "^2.4.1"
+    "@vscode/test-electron": "^2.4.1",
+    "eslint": "^9.13.0",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.6.3",
+    "webpack": "^5.95.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "dependencies": {
+    "@material-ui/core": "^4.12.4",
+    "@material-ui/icons": "^4.11.3",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "lucide-react": "^0.454.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-icons": "^5.3.0",
+    "recharts": "^2.13.1"
   }
 }

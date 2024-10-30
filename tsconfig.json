@@ -3,9 +3,10 @@
 		"module": "commonjs",
 		"target": "ES2022",
 		"outDir": "out",
-		"lib": ["ES2022"],
+		"lib": ["dom", "es2015"],
 		"sourceMap": true,
 		"rootDir": "src",
-		"strict": true
+		"strict": true,
+		"jsx": "react"
 	}
 }
