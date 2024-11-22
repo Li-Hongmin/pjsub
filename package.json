@@ -117,6 +117,31 @@
           "type": "boolean",
           "default": true,
           "description": "Join output and error logs."
+        },
+        "pjsub.mplConfigDir": {
+          "type": "string",
+          "default": "/data/scratch/gg53/d58004/matplotlib",
+          "description": "User-specific path for MPLCONFIGDIR."
+        },
+        "pjsub.wandbConfigDir": {
+          "type": "string",
+          "default": "/data/scratch/gg53/d58004/wandb",
+          "description": "User-specific path for WANDB_CONFIG_DIR."
+        },
+        "pjsub.transformersCache": {
+          "type": "string",
+          "default": "/data/scratch/gg53/d58004/transformers",
+          "description": "User-specific path for TRANSFORMERS_CACHE."
+        },
+        "pjsub.binDir": {
+          "type": "string",
+          "default": "/data/scratch/gg53/d58004/bin",
+          "description": "User-specific path for bin directory."
+        },
+        "pjsub.mambaforgeBinDir": {
+          "type": "string",
+          "default": "/work/gs58/d58004/mambaforge/bin",
+          "description": "User-specific path for mambaforge bin directory."
         }
       }
     }

@@ -8,6 +8,12 @@ export function generateShFileContent(workspaceFolder: string, pythonFileName: s
     const projectGroup = vscode.workspace.getConfiguration().get("pjsub.projectGroup", "default-project");
     const joinOutput = vscode.workspace.getConfiguration().get("pjsub.joinOutput", true);
 
+    const mplConfigDir = vscode.workspace.getConfiguration().get("pjsub.mplConfigDir", "/data/scratch/gg53/d58004/matplotlib");
+    const wandbConfigDir = vscode.workspace.getConfiguration().get("pjsub.wandbConfigDir", "/data/scratch/gg53/d58004/wandb");
+    const transformersCache = vscode.workspace.getConfiguration().get("pjsub.transformersCache", "/data/scratch/gg53/d58004/transformers");
+    const binDir = vscode.workspace.getConfiguration().get("pjsub.binDir", "/data/scratch/gg53/d58004/bin");
+    const mambaforgeBinDir = vscode.workspace.getConfiguration().get("pjsub.mambaforgeBinDir", "/work/gs58/d58004/mambaforge/bin");
+
     return `#!/bin/sh
 
 #------ pjsub option --------# 
@@ -19,13 +25,13 @@ ${joinOutput ? "#PJM -j" : ""}
 
 #------- Program execution -------#
 
-export MPLCONFIGDIR="/data/scratch/gg53/d58004/matplotlib"
-export WANDB_CONFIG_DIR="/data/scratch/gg53/d58004/wandb"
-export TRANSFORMERS_CACHE="/data/scratch/gg53/d58004/transformers"
-rm -rf /data/scratch/gg53/d58004/bin
-cp -r /work/gs58/d58004/mambaforge/bin/ /data/scratch/gg53/d58004/bin
-export PATH="/data/scratch/gg53/d58004/bin:$PATH"
-export PATH="/work/gs58/d58004/mambaforge/bin/:$PATH"
+export MPLCONFIGDIR="${mplConfigDir}"
+export WANDB_CONFIG_DIR="${wandbConfigDir}"
+export TRANSFORMERS_CACHE="${transformersCache}"
+rm -rf ${binDir}
+cp -r ${mambaforgeBinDir} ${binDir}
+export PATH="${binDir}:$PATH"
+export PATH="${mambaforgeBinDir}:$PATH"
 export TF_ENABLE_ONEDNN_OPTS=0
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 cd ${workspaceFolder}
